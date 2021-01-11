@@ -100,8 +100,44 @@
                   </li>
                 
                 <li><hr class="dropdown-divider"></li>
+                <li class="nav-item menu-is-opening menu-open">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon fas fa-calculator"></i>
+                      <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                        Materia Prima
+                        </font></font><i class="fas fa-angle-left right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview" style="display: block;">
+                        <li class="nav-item">
+                            <a href="{% url 'erp:cargarProducto_list' %}" class="nav-link">
+                                <i class="nav-icon fas fa-boxes"></i>
+                                <p>
+                                    Entrada de Materia Prima
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'erp:rawmaterial_list' %}" class="nav-link">
+                                <i class="nav-icon fas fa-shopping-cart"></i>
+                                <p>
+                                    Materia Prima
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'erp:suppliers_list' %}" class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Proveedores
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
 
-                <li class="nav-item">
+                  <li class="nav-item">
                     <a href="{% url 'user:user_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-user-friends"></i>
                         <p>

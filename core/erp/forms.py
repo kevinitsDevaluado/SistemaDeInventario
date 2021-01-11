@@ -3,7 +3,9 @@ from datetime import datetime
 from django import forms
 from django.forms import ModelForm
 
-from core.erp.models import Category, Product, Client, Sale,CargarProducto
+from core.erp.models import Category, Product, Client, Sale,CargarProducto,Suppliers, RawMaterial 
+
+
 
 
 class CategoryForm(ModelForm):
@@ -45,6 +47,111 @@ class CategoryForm(ModelForm):
         return data
 
 
+class SuppliersForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.visible_fields():
+            form.field.widget.attrs['class'] = 'form-control'
+            form.field.widget.attrs['autocomplete'] = 'off'
+       # self.fields['name'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Suppliers
+        fields = '__all__'
+        widgets = {
+            'ruc': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                }
+            ),
+            'names': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                }
+            ),
+            'direccion': forms.Textarea(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                    'rows': 3,
+                    'cols': 3
+                }
+            ),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+class RawMaterialForm(ModelForm):
+    #def __init__(self, *args, **kwargs):
+     #   super().__init__(*args, **kwargs)
+   #     self.fields['name'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = RawMaterial
+        fields = '__all__'
+        widgets = {
+            'nombre': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                }
+            ),
+            'descripcion': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                }
+            ),
+            'cantidad': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                }
+            ),
+            'prov': forms.Select(
+                attrs={
+                    'class': 'select2',
+                    'style': 'width: 100%'
+                }
+            ),
+            'date_ven' : forms.DateInput(
+                format='%Y-%m-%d',
+                attrs={
+                    'value': datetime.now().strftime('%Y-%m-%d'),
+                    'autocomplete': 'off',
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'date_joined',
+                    'data-target': '#date_joined',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'date_add': forms.TextInput(
+                attrs={
+                    'type': 'hidden',
+                }
+            ),
+
+
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
 class ProductForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -68,7 +175,7 @@ class ProductForm(ModelForm):
             ),
             'cant': forms.TextInput(
                 attrs={
-                    'type': 'hidden',
+                    'type': 'number',
                 }
             ),
         }
@@ -203,6 +310,7 @@ class ClientForm(ModelForm):
     #         raise forms.ValidationError('Validacion xxx')
     #         # self.add_error('name', 'Le faltan caracteres')
     #     return cleaned
+
 
 
 class TestForm(forms.Form):

@@ -8,7 +8,7 @@ from core.erp.choices import gender_choices
 from core.erp.validators import vcedula,validacionCantidad,validacionNacimiento
 from core.models import BaseModel
 
-
+#TABLA CATEGORIA
 class Category(models.Model):
     name = models.CharField(max_length=150, verbose_name='Nombre', unique=True)
     desc = models.CharField(max_length=500, null=True, blank=True, verbose_name='Descripción')
@@ -25,7 +25,47 @@ class Category(models.Model):
         verbose_name_plural = 'Categorias'
         ordering = ['id']
 
+#TABLA PROVEEDOR
+class Suppliers(models.Model):
+    ruc = models.CharField(max_length=10, verbose_name='Cédula',validators=[vcedula])
+    names = models.CharField(max_length=150, verbose_name='Nombres')
+    direccion = models.CharField(max_length=150, verbose_name='Direccion')
 
+
+    def __str__(self):
+        return self.ruc
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    class Meta:
+        verbose_name = 'Proveedor'
+        verbose_name_plural = 'Proveedores'
+        ordering = ['id']
+#TABLA MATERIA PRIMA
+class RawMaterial(models.Model):
+    nombre = models.CharField(max_length=15, verbose_name='Nombre')
+    descripcion = models.CharField(max_length=150, verbose_name='Descripcion')
+    cant = models.IntegerField(default=00000, null=True, blank=True,verbose_name='Cantidad')
+    prov = models.ForeignKey(Suppliers, on_delete=models.CASCADE, verbose_name='Proveedor')
+    date_ven = models.DateField(default=datetime.now, verbose_name='Fecha de Vencimiento')
+    date_add = models.DateField(default=datetime.now, verbose_name='Fecha de Creación')
+    def __str__(self):
+        return self.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['prov'] = self.prov.toJSON()
+        item['date_ven'] = self.date_birthday.strftime('%Y-%m-%d')
+        item['date_add'] = self.date_birthday.strftime('%Y-%m-%d')
+        return item
+
+    class Meta:
+        verbose_name = 'Materia Prima'
+        verbose_name_plural = 'Materia Prima'
+        ordering = ['id']
+#TABLA PRODUCTO
 class Product(models.Model):
     name = models.CharField(max_length=150, verbose_name='Nombre', unique=True)
     cat = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Categoría')
@@ -56,7 +96,7 @@ class Product(models.Model):
         #fields = []
         #fields = ['cat','name','image','cant','pvp']
         #order_with_respect_to = 'cat'
-
+#TABLA CARGAR PRODUCTO
 class CargarProducto(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     cant = models.IntegerField(default=00000,validators=[validacionCantidad],null=True, blank=True)
@@ -74,7 +114,7 @@ class CargarProducto(models.Model):
         #item['full_name'] = self.get_full_name()
         return item 
 
-
+#TABLA CLIENTE
 class Client(models.Model):
     names = models.CharField(max_length=150, verbose_name='Nombres')
     surnames = models.CharField(max_length=150, verbose_name='Apellidos')
@@ -101,7 +141,7 @@ class Client(models.Model):
         verbose_name_plural = 'Clientes'
         ordering = ['id']
 
-
+#TABLA FACTURA
 class Sale(models.Model):
     cli = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_joined = models.DateField(default=datetime.now)
@@ -127,7 +167,7 @@ class Sale(models.Model):
         verbose_name_plural = 'Ventas'
         ordering = ['id']
 
-
+#TABLA FACTURA
 class DetSale(models.Model):
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE)
     prod = models.ForeignKey(Product, on_delete=models.CASCADE)
