@@ -4,7 +4,7 @@ from django.db import models
 from django.forms import model_to_dict
 
 from config.settings import MEDIA_URL, STATIC_URL
-from core.erp.choices import gender_choices
+from core.erp.choices import gender_choices,gender_unid
 from core.erp.validators import vcedula,validacionCantidad,validacionNacimiento
 from core.models import BaseModel
 
@@ -33,7 +33,7 @@ class Suppliers(models.Model):
 
 
     def __str__(self):
-        return self.ruc
+        return self.names
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -45,30 +45,52 @@ class Suppliers(models.Model):
         ordering = ['id']
 #TABLA MATERIA PRIMA
 class RawMaterial(models.Model):
-    nombre = models.CharField(max_length=15, verbose_name='Nombre')
-    descripcion = models.CharField(max_length=150, verbose_name='Descripcion')
-    cant = models.IntegerField(default=00000, null=True, blank=True,verbose_name='Cantidad')
     prov = models.ForeignKey(Suppliers, on_delete=models.CASCADE, verbose_name='Proveedor')
+    nombre = models.CharField(max_length=15, verbose_name='Nombre')
+    uMedida = models.CharField(max_length=10, choices=gender_unid, default='libra', verbose_name='Unidad de Medida')
+    cant = models.IntegerField(default=00000, null=True, blank=True,verbose_name='Cantidad')
     date_ven = models.DateField(default=datetime.now, verbose_name='Fecha de Vencimiento')
-    date_add = models.DateField(default=datetime.now, verbose_name='Fecha de Creación')
+    date_add = models.DateField(default=datetime.now, verbose_name='Fecha de Creación',null=True, blank=True)
+    descripcion = models.CharField(max_length=150, verbose_name='Descripcion',null=True, blank=True)
+    
     def __str__(self):
         return self.nombre
 
     def toJSON(self):
         item = model_to_dict(self)
         item['prov'] = self.prov.toJSON()
-        item['date_ven'] = self.date_birthday.strftime('%Y-%m-%d')
-        item['date_add'] = self.date_birthday.strftime('%Y-%m-%d')
+        item['date_ven'] = self.date_ven.strftime('%Y-%m-%d')
+        item['date_add'] = self.date_add.strftime('%Y-%m-%d')
         return item
 
     class Meta:
         verbose_name = 'Materia Prima'
         verbose_name_plural = 'Materia Prima'
         ordering = ['id']
+
+#CARGAR MATERIA PRIMA
+class CargarRawMaterial(models.Model):
+    materiaPrima = models.ForeignKey(RawMaterial, on_delete=models.CASCADE)
+    cant = models.IntegerField(default=00000,validators=[validacionCantidad],null=True, blank=True)
+    fechaIngreso = models.DateField(default=datetime.now, verbose_name='Fecha de Ingreso',null=True, blank=True)
+    observacion = models.CharField(max_length=150, null=True, blank=True, verbose_name='Observacion')
+    
+    def __str__(self):
+        return self.materiaPrima.nombre  
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['materiaPrima'] = self.materiaPrima.toJSON()
+        #item['gender'] = {'id': self.gender, 'name': self.get_gender_display()}
+        item['fechaIngreso'] = self.fechaIngreso.strftime('%Y-%m-%d')
+        #item['full_name'] = self.get_full_name()
+        return item
+
 #TABLA PRODUCTO
 class Product(models.Model):
-    name = models.CharField(max_length=150, verbose_name='Nombre', unique=True)
     cat = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Categoría')
+    name = models.CharField(max_length=150, verbose_name='Nombre', unique=True)
+
     image = models.ImageField(upload_to='product/%Y/%m/%d', null=False, blank=True, verbose_name='Imagen')
     cant = models.IntegerField(default=00000, null=True, blank=True)
     pvp = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de venta',validators=[validacionCantidad])

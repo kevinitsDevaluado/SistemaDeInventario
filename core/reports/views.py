@@ -65,3 +65,4 @@ class ReportSaleView(TemplateView):
         context['form'] = ReportForm()
         return context
 
+

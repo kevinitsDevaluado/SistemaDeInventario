@@ -3,7 +3,7 @@ from datetime import datetime
 from django import forms
 from django.forms import ModelForm
 
-from core.erp.models import Category, Product, Client, Sale,CargarProducto,Suppliers, RawMaterial 
+from core.erp.models import Category, Product, Client, Sale,CargarProducto,Suppliers, RawMaterial, CargarRawMaterial 
 
 
 
@@ -104,14 +104,10 @@ class RawMaterialForm(ModelForm):
                     'placeholder': 'Ingrese un nombre',
                 }
             ),
-            'descripcion': forms.TextInput(
+
+            'cant': forms.TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un nombre',
-                }
-            ),
-            'cantidad': forms.TextInput(
-                attrs={
-                    'placeholder': 'Ingrese un nombre',
+                    'type': 'hidden',
                 }
             ),
             'prov': forms.Select(
@@ -120,6 +116,7 @@ class RawMaterialForm(ModelForm):
                     'style': 'width: 100%'
                 }
             ),
+            'uMedida': forms.Select(),
             'date_ven' : forms.DateInput(
                 format='%Y-%m-%d',
                 attrs={
@@ -136,7 +133,11 @@ class RawMaterialForm(ModelForm):
                     'type': 'hidden',
                 }
             ),
-
+            'descripcion': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una descripción',
+                }
+            ),
 
         }
 
@@ -151,6 +152,57 @@ class RawMaterialForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
+class CargarRawMaterialForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #self.fields['name'].widget.attrs['autofocus'] = True
+        
+
+    class Meta:
+        model = CargarRawMaterial
+        fields = '__all__'
+        widgets = {
+            'materiaPrima': forms.Select(
+                attrs={
+                    'class': 'select2',
+                    'style': 'width: 100%'
+                }
+            ),
+            'cant': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese la cantidad',
+                    'type':'number' ,
+                    'min': '0', 
+                    'step': '1'
+                }
+            ),
+            'fechaIngreso': forms.TextInput(
+                attrs={
+                    'type': 'hidden',
+                }
+            ),
+            'observacion': forms.Textarea(
+                attrs={
+                    'type': 'hidden',
+                }
+            ),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
 
 class ProductForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -168,14 +220,16 @@ class ProductForm(ModelForm):
                     'style': 'width: 100%'
                 }
             ),
+
             'name': forms.TextInput(
                 attrs={
                     'placeholder': 'Ingrese un nombre',
                 }
             ),
+            
             'cant': forms.TextInput(
                 attrs={
-                    'type': 'number',
+                    'type': 'hidden',
                 }
             ),
         }
@@ -241,6 +295,8 @@ class CargarProductoForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
 
 
 

@@ -8,6 +8,7 @@ from core.erp.views.sale.views import *
 from core.erp.views.tests.views import TestView
 from core.erp.views.Suppliers.views import *
 from core.erp.views.RawMaterial.views import *
+from core.erp.views.cargarRawMaterial.views import *
 
 app_name = 'erp'
 
@@ -53,4 +54,9 @@ urlpatterns = [
     path('rawmaterial/add/', RawMaterialCreateView.as_view(), name='rawmaterial_create'),
     path('rawmaterial/delete/<int:pk>/', RawMaterialDeleteView.as_view(), name='rawmaterial_delete'),
     path('rawmaterial/update/<int:pk>/', RawMaterialUpdateView.as_view(), name='rawmaterial_update'),
+        # Cargarproduct
+    path('cargarRawMaterial/list/', CargarRawMaterialListView.as_view(), name='cargarRawMaterial_list'),
+    path('cargarRawMaterial/add/', CargarRawMaterialCreateView.as_view(), name='cargarRawMaterial_create'),
+    path('cargarRawMaterial/update/<int:pk>/', CargarRawMaterialUpdateView.as_view(), name='cargarRawMaterial_update'),
+    path('cargarRawMaterial/delete/<int:pk>/', CargarRawMaterialDeleteView.as_view(), name='cargarRawMaterial_delete'),
 ]
