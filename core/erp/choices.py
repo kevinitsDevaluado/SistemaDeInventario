@@ -4,7 +4,10 @@ gender_choices = (
 )
 
 gender_unid = (
-    ('libras','lb'),
-    ('litros','L'),
+    ('libras','libras'),
+    ('litros','Litros'),
     ('Costales','Costal'),
+    ('kilos','Kilos'),
+    ('gramos','gramos'),
+
 )

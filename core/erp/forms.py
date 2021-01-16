@@ -117,17 +117,6 @@ class RawMaterialForm(ModelForm):
                 }
             ),
             'uMedida': forms.Select(),
-            'date_ven' : forms.DateInput(
-                format='%Y-%m-%d',
-                attrs={
-                    'value': datetime.now().strftime('%Y-%m-%d'),
-                    'autocomplete': 'off',
-                    'class': 'form-control datetimepicker-input',
-                    'id': 'date_joined',
-                    'data-target': '#date_joined',
-                    'data-toggle': 'datetimepicker'
-                }
-            ),
             'date_add': forms.TextInput(
                 attrs={
                     'type': 'hidden',
@@ -174,13 +163,25 @@ class CargarRawMaterialForm(ModelForm):
                 attrs={
                     'placeholder': 'Ingrese la cantidad',
                     'type':'number' ,
-                    'min': '0', 
+                    'min': '1', 
                     'step': '1'
                 }
             ),
             'fechaIngreso': forms.TextInput(
                 attrs={
                     'type': 'hidden',
+                }
+            ),
+            'date_ven' : forms.DateInput(
+                format='%Y-%m-%d',
+                attrs={
+                    'value': datetime.now().strftime('%Y-%m-%d'),
+                    'autocomplete': 'off',
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'date_vencimiento',
+                    'data-target': '#date_vencimiento',
+                    'data-toggle': 'datetimepicker',
+                    'min' : datetime.now().strftime('%Y-%m-%d'),
                 }
             ),
             'observacion': forms.Textarea(
@@ -227,7 +228,7 @@ class ProductForm(ModelForm):
                 }
             ),
             
-            'cant': forms.TextInput(
+            'stock': forms.TextInput(
                 attrs={
                     'type': 'hidden',
                 }
@@ -267,7 +268,7 @@ class CargarProductoForm(ModelForm):
                 attrs={
                     'placeholder': 'Ingrese la cantidad',
                     'type':'number' ,
-                    'min': '0', 
+                    'min': '1', 
                     'step': '1'
                 }
             ),
@@ -276,9 +277,22 @@ class CargarProductoForm(ModelForm):
                     'type': 'hidden',
                 }
             ),
+            'date_ven' : forms.DateInput(
+                format='%Y-%m-%d',
+                attrs={
+                    'value': datetime.now().strftime('%Y-%m-%d'),
+                    'autocomplete': 'off',
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'date_vencimiento',
+                    'data-target': '#date_vencimiento',
+                    'data-toggle': 'datetimepicker',
+                    #'min' : datetime.now().strftime('%Y-%m-%d'),
+    
+                }
+            ),
             'observacion': forms.Textarea(
                 attrs={
-                    'type': 'hidden',
+                    'type': 'text',
                 }
             ),
         }
@@ -333,8 +347,8 @@ class ClientForm(ModelForm):
                     'value': datetime.now().strftime('%Y-%m-%d'),
                     'autocomplete': 'off',
                     'class': 'form-control datetimepicker-input',
-                    'id': 'date_joined',
-                    'data-target': '#date_joined',
+                    'id': 'date_MaxNacimiento',
+                    'data-target': '#date_MaxNacimiento',
                     'data-toggle': 'datetimepicker'
                 }
             ),

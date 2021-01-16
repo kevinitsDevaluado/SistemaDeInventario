@@ -17,7 +17,9 @@ $(function () {
             {"data": "product.name"},
             {"data": "cant"},
             {"data": "fechaIngreso"},
+            {"data": "date_ven"},
             {"data": "observacion"},
+
             {"data": "id"},
         ],
         columnDefs: [
@@ -27,7 +29,7 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="/erp/cargarProducto/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                    var buttons = '<a href="/erp/cargarProducto/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat" hidden="hidden"><i class="fas fa-edit"></i></a> ';
                     buttons += '<a href="/erp/cargarProducto/delete/' + row.id + '/" type="button" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
                     return buttons;
                 }

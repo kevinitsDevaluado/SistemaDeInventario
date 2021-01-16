@@ -5,7 +5,7 @@ function format(d) {
     var html = '<table class="table">';
     html += '<thead class="thead-dark">';
     html += '<tr><th scope="col">Producto</th>';
-    html += '<th scope="col">Categoría</th>';
+    html += '<th scope="col">Stock</th>';
     html += '<th scope="col">PVP</th>';
     html += '<th scope="col">Cantidad</th>';
     html += '<th scope="col">Subtotal</th></tr>';

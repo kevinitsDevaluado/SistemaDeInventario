@@ -93,7 +93,23 @@
         date: moment().format("YYYY-MM-DD"),
         locale: 'es',
         //minDate: moment().format("YYYY-MM-DD")
-    });
+        });
+        
+        $('#date_vencimiento').datetimepicker({
+        format: 'YYYY-MM-DD',
+        //FECHA DE VENCIMIENTO DE PRODUCTOS MINIMO LA FECHA ACTUAL
+        date: moment().format("YYYY-MM-DD"),
+        locale: 'es',
+        minDate: moment().format("YYYY-MM-DD")
+        });
+           
+        $('#date_MaxNacimiento').datetimepicker({
+        format: 'YYYY-MM-DD',
+        //FECHA DE VENCIMIENTO DE PRODUCTOS MINIMO LA FECHA ACTUAL
+        date: moment().format("YYYY-MM-DD"),
+        locale: 'es',
+        maxDate: moment().format("YYYY-MM-DD")
+        });
     </script>
     
 {% endblock %}

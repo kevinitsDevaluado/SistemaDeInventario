@@ -118,6 +118,17 @@ class CargarRawMaterialUpdateView(LoginRequiredMixin, ValidatePermissionRequired
             if action == 'edit':
                 form = self.get_form()
                 data = form.save()
+                id_producto = request.POST.get('materiaPrima')
+                cantidad = request.POST.get('cant')
+                #CON LA VARIABLE P1 TRAEMOS EL PRODUCTO QUE VAMOS A CARGAR CON LA AYUDA DEL GET
+                p1 = RawMaterial.objects.get(id=id_producto)
+                #REALIZAMOS LA OPERACION CORRESPONDIETE A SUMAR PRIMERO TRAEMOS LA CANTIDAD ACTUAL DEL PRODUCTO PARA
+                #LUEGO SUMARLO CON LA CANTIDAD QUE INGRESAMOS EL PRODUCOT
+                cantidad_actual = p1.cant #0
+                sum = int(cantidad_actual)+int(cantidad)
+                p1.cant = sum
+                #UNA VES REALIZADO TODAS LAS OPERACIONES GUARDAMOS
+                p1.save()
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:

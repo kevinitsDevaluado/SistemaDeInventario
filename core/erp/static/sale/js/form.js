@@ -9,6 +9,13 @@ var vents = {
         total: 0.00,
         products: []
     },
+    get_ids: function(){
+        var ids = [];
+        $.each(this.items.products, function(key, value){
+            ids.push(value.id);
+        });
+        return ids;
+    },
     calculate_invoice: function () {
         var subtotal = 0.00;
         var iva = $('input[name="iva"]').val();
@@ -38,8 +45,8 @@ var vents = {
             data: this.items.products,
             columns: [
                 {"data": "id"},
-                {"data": "name"},
-                {"data": "cat.name"},
+                {"data": "fullname"},
+                {"data": "stock"},
                 {"data": "pvp"},
                 {"data": "cant"},
                 {"data": "subtotal"},
@@ -51,6 +58,14 @@ var vents = {
                     orderable: false,
                     render: function (data, type, row) {
                         return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;"><i class="fas fa-trash-alt"></i></a>';
+                    }
+                },
+                {
+                    targets: [-4],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<span class="badge badge-secondary">'+data+'</span>'
                     }
                 },
                 {
@@ -82,7 +97,7 @@ var vents = {
 
                 $(row).find('input[name="cant"]').TouchSpin({
                     min: 1,
-                    max: 1000000000,
+                    max: data.stock,
                     step: 1
                 });
 
@@ -93,6 +108,7 @@ var vents = {
         });
         console.clear();
         console.log(this.items);
+        console.log(this.get_ids());
     },
 };
 
@@ -114,8 +130,8 @@ function formatRepo(repo) {
         '<div class="col-lg-11 text-left shadow-sm">' +
         //'<br>' +
         '<p style="margin-bottom: 0;">' +
-        '<b>Nombre:</b> ' + repo.name + '<br>' +
-        '<b>Categoría:</b> ' + repo.cat.name + '<br>' +
+        '<b>Nombre:</b> ' + repo.fullname + '<br>' +
+        '<b>Stock:</b> <span class="badge badge-secondary">' + repo.stock + '</span> <br>' +
         '<b>PVP:</b> <span class="badge badge-warning">$' + repo.pvp + '</span>' +
         '</p>' +
         '</div>' +
@@ -136,7 +152,7 @@ $(function () {
         format: 'YYYY-MM-DD',
         date: moment().format("YYYY-MM-DD"),
         locale: 'es',
-        //minDate: moment().format("YYYY-MM-DD")
+        minDate: moment().format("YYYY-MM-DD")
     });
 
     $("input[name='iva']").TouchSpin({
@@ -278,18 +294,28 @@ $(function () {
                 type: 'POST',
                 data: {
                     'action': 'search_products',
-                    'term': $('select[name="search"]').val()
+                    'ids': JSON.stringify(vents.get_ids()),
+                    'term': $('select[name="search"]').val(),
+
                 },
                 dataSrc: ""
             },
             columns: [
-                {"data": "name"},
-                {"data": "cat.name"},
+                {"data": "fullname"},
+                {"data": "stock"},
                 {"data": "image"},
                 {"data": "pvp"},
                 {"data": "id"},
             ],
             columnDefs: [
+                {
+                    targets: [-4],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<span class="badge badge-secondary">'+data+'</span>'
+                    }
+                },
                 {
                     targets: [-3],
                     class: 'text-center',
@@ -330,6 +356,7 @@ $(function () {
             product.cant = 1;
             product.subtotal = 0.00;
             vents.add(product);
+            tblSearchProducts.row($(this).parents('tr')).remove().draw();
         });
 
     // event submit
@@ -368,7 +395,8 @@ $(function () {
             data: function (params) {
                 var queryParameters = {
                     term: params.term,
-                    action: 'search_autocomplete'
+                    action: 'search_autocomplete',
+                    ids: JSON.stringify(vents.get_ids())
                 }
                 return queryParameters;
             },

@@ -18,7 +18,6 @@ $(function () {
             {"data": "nombre"},
             {"data": "uMedida"},
             {"data": "cant"},
-            {"data": "date_ven"},
             {"data": "descripcion"},
             {"data": "id"}, 
         ],
@@ -31,6 +30,8 @@ $(function () {
                 render: function (data, type, row) {
                     var buttons = '<a href="/erp/rawmaterial/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                     buttons += '<a href="/erp/rawmaterial/delete/' + row.id + '/" type="button" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
+                    //buttons += '<a href="/erp/cargarRawMaterial/add/" type="button" style="margin-left: 4px" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-square"></i></a>';
+                    
                     return buttons;
                 }
             },

@@ -75,13 +75,13 @@ class CargarProductoCreateView(LoginRequiredMixin, ValidatePermissionRequiredMix
                 p1 = Product.objects.get(id=id_producto)
                 #REALIZAMOS LA OPERACION CORRESPONDIETE A SUMAR PRIMERO TRAEMOS LA CANTIDAD ACTUAL DEL PRODUCTO PARA
                 #LUEGO SUMARLO CON LA CANTIDAD QUE INGRESAMOS EL PRODUCOT
-                cantidad_actual = p1.cant #0
+                cantidad_actual = p1.stock #0
                 sum = int(cantidad_actual)+int(cantidad)
-                p1.cant = sum
+                p1.stock = sum
                 #UNA VES REALIZADO TODAS LAS OPERACIONES GUARDAMOS
                 p1.save()
 
-                return HttpResponse(json.dumps("cantidad_actual: "+str(p1.cant)+", cantidad_form: "+str(cantidad_actual)+"sum: "+str(sum)), content_type="application/json")
+                return HttpResponse(json.dumps("cantidad_actual: "+str(p1.stock)+", cantidad_form: "+str(cantidad_actual)+"sum: "+str(sum)), content_type="application/json")
               
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'

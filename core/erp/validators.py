@@ -2,13 +2,17 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 
 
+def validacionFechaActual(self, value):
+    l = datetime.now()
+    if value >  l:
+        raise ValidationError('Fecha Incorrecta')
 
 def validacionCantidad(value):
     if not value > 0:
         raise ValidationError('Ingrese una Cantidad valida..!!')
 
 def validacionNacimiento(fecha):
-    if not datetime.now > datetime.now :
+    if not fecha > datetime.now :
         raise ValidationError('Fecha valida..!!')
         
 def vcedula(texto):

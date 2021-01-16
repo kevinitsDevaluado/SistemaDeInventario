@@ -76,24 +76,27 @@ class SaleCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Create
             action = request.POST['action']
             if action == 'search_products':
                 data = []
+                ids_exclude =  json.loads(request.POST['ids']) 
                 term = request.POST['term'].strip()
-                products = Product.objects.filter()
+                products = Product.objects.filter(stock__gt=0)
                 if len(term):
                     products = products.filter(name__icontains=term)
-                for i in products[0:10]:
+                for i in products.exclude(id__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.name
                     # item['text'] = i.name
                     data.append(item)
             elif action == 'search_autocomplete':
                 data = []
+                ids_exclude =  json.loads(request.POST['ids']) 
                 term = request.POST['term'].strip()
                 data.append({'id': term, 'text':term})
-                products = Product.objects.filter(name__icontains=term)
-                for i in products[0:10]:
+                products = Product.objects.filter(name__icontains=term,stock__gt=0)
+                for i in products.exclude(id__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['text'] = i.name
                     data.append(item)
+            
             elif action == 'add':
                 with transaction.atomic():
                     vents = json.loads(request.POST['vents'])
@@ -111,16 +114,13 @@ class SaleCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Create
                         det.prod_id = i['id']
                         det.cant = int(i['cant'])
                         p1 = Product.objects.get(id=det.prod_id)
-                        cantidad_actual = p1.cant #0
-                        if cantidad_actual > det.cant:
-                            sum = int(cantidad_actual)-int(det.cant)
-                            p1.cant = sum
-                            #UNA VES REALIZADO TODAS LAS OPERACIONES GUARDAMOS
-                            p1.save()
-                            #messages.info(request, 'El stock de '+ str(det.prod.name) + ' Esta apunto de Quedar Vacio' )
-                            #raise ValidationError('Con esta compra el Stock queda Vacio')
-                        else:    
-                            raise ValidationError('La cantidad ingresada Sobrepasa lo que hay en stock')
+                        cantidad_actual = p1.stock #0
+                        sum = int(cantidad_actual)-int(det.cant)
+                        p1.stock = sum
+                        #UNA VES REALIZADO TODAS LAS OPERACIONES GUARDAMOS
+                        p1.save()
+                        #messages.info(request, 'El stock de '+ str(det.prod.name) + ' Esta apunto de Quedar Vacio' )
+                        #raise ValidationError('Con esta compra el Stock queda Vacio')
                         det.price = float(i['pvp'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
@@ -180,24 +180,27 @@ class SaleUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Update
             action = request.POST['action']
             if action == 'search_products':
                 data = []
+                ids_exclude =  json.loads(request.POST['ids']) 
                 term = request.POST['term'].strip()
-                products = Product.objects.filter()
+                products = Product.objects.filter(stock__gt=0)
                 if len(term):
                     products = products.filter(name__icontains=term)
-                for i in products[0:10]:
+                for i in products.exclude(id__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.name
                     # item['text'] = i.name
                     data.append(item)
             elif action == 'search_autocomplete':
                 data = []
+                ids_exclude =  json.loads(request.POST['ids']) 
                 term = request.POST['term'].strip()
-                data.append({'id': term, 'text': term})
-                products = Product.objects.filter(name__icontains=term)
-                for i in products[0:10]:
+                data.append({'id': term, 'text':term})
+                products = Product.objects.filter(name__icontains=term,stock__gt=0)
+                for i in products.exclude(id__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['text'] = i.name
                     data.append(item)
+            
             elif action == 'edit':
                 with transaction.atomic():
                     vents = json.loads(request.POST['vents'])
